@@ -12,8 +12,8 @@ class Dialogbox:
 		self.name = name
 		self.dialog_box_rect = pygame.Rect(300, HEIGTH-(UI_FONT_SIZE*4 + 12), 680, (UI_FONT_SIZE*4 + 12))
 		if name in DIALOG_TEXTS:
-			if str(quest) in DIALOG_TEXTS[name]['quests']:
-				self.dialog_texts = DIALOG_TEXTS[name]['quests'][str(quest)]
+			if 'quests' in DIALOG_TEXTS[name] and quest in DIALOG_TEXTS[name]['quests']:
+				self.dialog_texts = DIALOG_TEXTS[name]['quests'][quest]
 			elif 'default' in DIALOG_TEXTS[name]:
 				self.dialog_texts = DIALOG_TEXTS[name]['default']
 			else:
@@ -58,7 +58,7 @@ class Dialogbox:
 				next_txt = self.font.render("SUIVANT...", False, TEXT_COLOR)
 				x = x - UI_FONT_SIZE * 8 - 6
 			else:
-				next_txt = self.font.render("FIN.", False, TEXT_COLOR)
+				next_txt = self.font.render("FIN", False, TEXT_COLOR)
 				x = x - UI_FONT_SIZE * 3 - 6
 
 			self.display_surface.blit(next_txt, (x, y))
@@ -76,6 +76,7 @@ class Dialogbox:
 				self.dialog_ended = True
 
 	def display(self):
-		self.draw_dialogbox()
+		if not self.dialog_ended:
+			self.draw_dialogbox()
 
 

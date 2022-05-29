@@ -35,7 +35,7 @@ class Game:
 					if event.key == pygame.K_p:
 						self.level.paused = not self.level.paused
 					if event.key == pygame.K_e:
-						self.level.interact()
+						self.level.interact_with_world()
 
 			self.screen.fill(WATER_COLOR)
 			self.level.run()

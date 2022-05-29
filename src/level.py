@@ -13,7 +13,7 @@ from src.dialog import Dialogbox
 
 class Level:
     def __init__(self):
-
+        self.current_quest = 1
         self.paused = False
 
         # get the display surface 
@@ -22,6 +22,7 @@ class Level:
         # sprite group setup
         self.visible_sprites = pygame.sprite.Group()
         self.obstacle_sprites = pygame.sprite.Group()
+        self.interact_sprites = pygame.sprite.Group()
 
         self.current_level = START_MAP_NAME
         self.world = pyscroll.PyscrollGroup
@@ -29,15 +30,14 @@ class Level:
 
         # NPC
         self.npcs = []
+        self.dialogbox = Dialogbox("random heros", self.current_quest)
+        self.dialogbox.dialog_ended = True
 
         # tile setup
         self.load_level(self.current_level)
 
         # level UI
         self.ui = UI()
-        self.current_quest = 0
-
-        self.dialogbox = Dialogbox("vieux pecheur", self.current_quest)
 
     def load_npc(self, poi: pytmx.TiledObject):
         # self.npcs = NPC((poi.x, poi.y), [self.world], poi)
@@ -110,12 +110,22 @@ class Level:
             pygame.draw.rect(self.display_surface, DIALOG_BG_COLOR, text_rect)
             self.display_surface.blit(text_surf,text_rect)
 
-    def interact(self):
-        self.paused = True
-        self.dialogbox.next_dialog()
-        if self.dialogbox.dialog_ended:
-            self.paused = False
-            self.dialogbox = Dialogbox("vieux pecheur", 1)
+    def interact_with_world(self):
+        if not self.dialogbox.dialog_ended:
+            self.dialogbox.next_dialog()
+            if self.dialogbox.dialog_ended:
+                self.paused = False
+        else:
+            for sprite in self.world.get_sprites_from_layer(30):
+                print(self.player.hitbox.inflate(6,6))
+                print(sprite.hitbox)
+                print(pygame.Rect.colliderect(self.player.hitbox.inflate(6,6), sprite.hitbox))
+                if pygame.Rect.colliderect(self.player.hitbox.inflate(6,6), sprite.hitbox):
+                    self.dialogbox = Dialogbox(sprite.name, self.current_quest)
+                    if sprite.dialogs != {}:
+                        self.paused = True
+                        self.dialogbox.next_dialog()
+            
 
     def run(self):
         if not self.paused:
@@ -132,5 +142,4 @@ class Level:
 
         self.ui.display(self.player)
         self.draw_pause()
-        if self.paused:
-            self.dialogbox.display()
+        self.dialogbox.display()

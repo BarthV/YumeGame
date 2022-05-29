@@ -7,6 +7,7 @@ class Player(pygame.sprite.Sprite):
 	def __init__(self, pos, group: pyscroll.PyscrollGroup, world_colliders, create_attack, destroy_attack):
 		super().__init__(group)
 
+		self.name = "player"
 		self.group = group
 		self.group.change_layer(self, 40)
 		self.sprite_sheet = pygame.image.load('assets/sprites/Male/Male 16-1.png').convert()

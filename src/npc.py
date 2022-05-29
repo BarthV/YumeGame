@@ -1,6 +1,7 @@
 import pygame
 import pytmx
 from src.settings import *
+from src.dialog import *
 from src.support import import_folder
 
 
@@ -21,11 +22,18 @@ class NPC(pygame.sprite.Sprite):
         self.animation_speed = 0.17
         self.animations = {}
 
+        # dialog setup
+        self.dialogs = {}
+        if tiled_object.properties["dialog"]:
+            if tiled_object.name in DIALOG_TEXTS:
+                self.dialogs = DIALOG_TEXTS[tiled_object.name]
+
         # init sprite
         self.init_animation_table()
         self.image = self.get_image(32, 0)
         self.rect = self.image.get_rect(topleft=(tiled_object.x, tiled_object.y))
-        self.hitbox = self.rect.inflate(0, -26)
+        # self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect
 
     def init_animation_table(self):
         self.animations = {
